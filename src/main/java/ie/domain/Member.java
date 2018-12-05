@@ -30,10 +30,10 @@ public class Member {
 	
 	private boolean authenticated;	
 	
-	@OneToMany(mappedBy = "member", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
+	@OneToMany(mappedBy = "member", fetch=FetchType.LAZY, cascade= CascadeType.ALL)
 	private List<Pledge> pledges = new ArrayList<Pledge>();
 	
-	@OneToMany(mappedBy = "member", fetch=FetchType.LAZY, cascade= CascadeType.ALL)
+	@OneToMany(mappedBy = "member", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
 	private List<Project> projects = new ArrayList<Project>();
 	
 	
@@ -91,16 +91,16 @@ public class Member {
 		return pledges;
 	}
 
-	public void setPledges(List<Pledge> pledges) {
-		this.pledges = pledges;
+	public void addPledge(Pledge pledge) {
+		pledges.add(pledge);
 	}
 
 	public List<Project> getProjects() {
 		return projects;
 	}
 
-	public void setProjects(List<Project> projects) {
-		this.projects = projects;
+	public void addProject(Project project) {
+		projects.add(project);
 	}
 	
 	

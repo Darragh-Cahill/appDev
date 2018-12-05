@@ -6,8 +6,12 @@ import ie.domain.Pledge;
 
 public interface PledgeDao extends JpaRepository<Pledge, Integer>{
 
-	boolean existsByPledgeName(String pledgeName);
-
-	Pledge findByPledgeName(String pledgeName);
+	
+	
+  /* List<Town> findByCounty_CountyName(String countyName);
+  	List<Town> findByCounty_CountyId(int countyId);
+  	List<Town> findByTownNameIgnoringCase(String townName);
+  	List<Town> findByTownNameIsStartingWith(String s);
+  */
 
 }

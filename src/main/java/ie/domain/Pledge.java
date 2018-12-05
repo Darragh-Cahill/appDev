@@ -1,5 +1,6 @@
 package ie.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +17,8 @@ public class Pledge {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int pledgeId;
+	@Column(nullable=false)
+	private int pledgeAmount;
 	
 	@ManyToOne
 	@JoinColumn(name="memberId")
@@ -30,9 +33,9 @@ public class Pledge {
 	
 	public Pledge() {}
 	
-	public Pledge(int pledgeId, Member member, Project project) {
+	public Pledge(Member member, Project project, int pledgeAmount) {
 		super();
-		this.pledgeId = pledgeId;
+		this.pledgeAmount = pledgeAmount;
 		this.member = member;
 		this.project = project;
 	}
@@ -42,7 +45,15 @@ public class Pledge {
 	}
 	public void setPledgeId(int pledgeId) {
 		this.pledgeId = pledgeId;
+	}	
+	
+	public int getPledgeAmount() {
+		return pledgeAmount;
 	}
+	public void setPledgeAmount(int pledgeAmount) {
+		this.pledgeAmount = pledgeAmount;
+	}
+
 	public Member getMember() {
 		return member;
 	}

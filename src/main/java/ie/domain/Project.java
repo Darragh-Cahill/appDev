@@ -108,8 +108,8 @@ public class Project {
 	}
 
 
-	public void setPledges(List<Pledge> pledges) {
-		this.pledges = pledges;
+	public void addPledge(Pledge pledge) {
+		pledges.add(pledge);
 	}
 
 

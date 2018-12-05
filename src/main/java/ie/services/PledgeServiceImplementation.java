@@ -15,20 +15,18 @@ public class PledgeServiceImplementation implements PledgeService {
 	@Autowired
 	MemberDao memberDao;
 	@Autowired
+	ProjectDao projectDao;
+	@Autowired
 	ProjectService projectService;
+	@Autowired
+	MemberService memberService;
+	
 	
 	@Override
 	public Pledge findPledge(int id) {
 		if(pledgeDao.existsById(id)) {
 			return pledgeDao.findById(id).get();
 		}
-		return null;
-	}
-	
-	@Override
-	public Pledge findByName(String pledgeName) {
-		if(pledgeDao.existsByPledgeName(pledgeName))
-			return pledgeDao.findByPledgeName(pledgeName);
 		return null;
 	}
 	
@@ -43,10 +41,15 @@ public class PledgeServiceImplementation implements PledgeService {
 	}
 	
 	@Override
-	public Pledge save(Pledge pledge) {
-		if (pledgeDao.existsByPledgeName(pledge.getPledgeName()))
-			return null;
-		return pledgeDao.save(pledge);
+	public Pledge addPledge(int pledgeAmount, int memberId, int projectId) {
+		if(memberDao.existsById(memberId) && projectDao.existsById(projectId)) {	
+			Member member = memberService.findMember(memberId); //Get member and project objects and create a pledge associated with them
+			Project project = projectService.findProject(projectId);
+			Pledge pledge = new Pledge(member, project, pledgeAmount);
+			pledgeDao.save(pledge); //Add the pledge to the database
+			return pledge;
+		}
+		return null;
 	}
 	
 	

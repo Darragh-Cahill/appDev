@@ -1,6 +1,7 @@
 package ie.services;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,12 @@ public class MemberServiceImplementation implements MemberService {
 	@Autowired
 	MemberDao memberDao;
 	@Autowired
+	ProjectDao projectDao;
+	@Autowired
 	ProjectService projectService;
+	@Autowired
+	PledgeService pledgeService;
+	
 	
 	@Override
 	public Member findMember(int id) {
@@ -33,6 +39,14 @@ public class MemberServiceImplementation implements MemberService {
 	}
 	
 	@Override
+	public List<Project> findAllProjectsForMember(int memberId){	//List all projects for a member
+		if(memberDao.existsById(memberId)){
+			return findMember(memberId).getProjects();
+		}
+		return null;
+	}
+	
+	@Override
 	public boolean deleteMember(int id) {
 		if (memberDao.existsById(id))
 		{
@@ -42,12 +56,6 @@ public class MemberServiceImplementation implements MemberService {
 		return false;
 	}
 	
-	@Override
-	public Member save(Member member) {
-		if (memberDao.existsByMemberName(member.getMemberName()))
-			return null;
-		return memberDao.save(member);
-	}
 	
 	@Override
 	public boolean registerUser(String name, String email, String password) {
@@ -55,18 +63,13 @@ public class MemberServiceImplementation implements MemberService {
 			return false;
 		}
 		Member member = new Member(name, email, password);
-		save(member);
+		memberDao.save(member);
 		return true;
 	}
 	
 	@Override
-	public boolean addProject(int memberId, String name, String desc, int target, LocalDate dateCreation) {
-		if(isUserAuthenticated(memberId)) {	//First check if member is authenticated to create a project
-			Project project = new Project(name, desc, target, dateCreation, memberDao.findById(memberId).get());
-			projectService.save(project);
-			return true; //When project is added successfully return true
-		}
-		return false; //Else return false
+	public void addProject(int memberId, Project project) { //Add project to a members project list
+		findMember(memberId).addProject(project);
 	}
 	
 	@Override
@@ -78,9 +81,21 @@ public class MemberServiceImplementation implements MemberService {
 	}
 	
 	@Override
-	public pledgeToAProject(int projectId) {
-		
+	public boolean pledgeToAProject(int memberId, int projectId, int pledgeAmount) { //Add pledge to list of pledges for a member, add to projects list of pledges
+		if(memberDao.existsById(memberId) && projectDao.existsById(projectId)) {
+			Member member = findMember(memberId);
+			Project project = projectService.findProject(projectId);
+			Pledge pledge = new Pledge(member, project, pledgeAmount);
+			member.addPledge(pledge); //Add the pledge to list of pledges
+			projectService.addPledgeToProject(pledge, projectId); //Add pledge to project list
+		}
+		return false;
 	}
+
 	
 	
 }
+
+
+
+
